@@ -1,0 +1,61 @@
+#include "Bureaucrat.hpp"
+
+Bureaucrat::Bureaucrat(){
+    std::cout << "Default constructor called" << std::endl;
+}
+
+Bureaucrat::Bureaucrat(const std::string name, int grade) : _name(name), _grade(grade){
+	if (grade < 1)
+		throw Bureaucrat::highException();
+	if (grade > 150)
+		throw Bureaucrat::lowException();
+}
+
+Bureaucrat::Bureaucrat(const Bureaucrat& src) : _name(src._name), _grade(src._grade){
+}
+
+// Copy assignment operator
+Bureaucrat& Bureaucrat::operator=(const Bureaucrat& src) {
+	if (this != &src)
+		_grade = src.getGrade();
+	return *this;
+}
+
+// Destructor
+Bureaucrat::~Bureaucrat() {
+    std::cout << "Destructor called" << std::endl;
+}
+
+std::string	Bureaucrat::getName() const {
+	return _name;
+}
+
+int	Bureaucrat::getGrade() const {
+	return _grade;
+}
+
+void	Bureaucrat::incrGrade(){
+	if (_grade - 1 < 1)
+		throw Bureaucrat::highException();
+	_grade--;
+}
+
+void	Bureaucrat::decrGrade(){
+	if (_grade + 1 > 150)
+		throw Bureaucrat::lowException();
+	_grade++;
+}
+
+void	Bureaucrat::executeForm( const AForm& form ) const {
+	try {
+		form.execute( *this );
+	} catch ( std::exception& e ) {
+		std::cout << _name << " couldn't execute " << form.getName() 
+			<< " because " << e.what() << std::endl;
+	}
+}
+
+std::ostream& operator<<( std::ostream& ost, const Bureaucrat& src ){
+	ost << src.getName() << ", \n-grade :" << src.getGrade();
+	return ost;
+}
